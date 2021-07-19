@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +34,7 @@ public class CategoriaResource {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<CategoriaDTO> findAll(@PathVariable("id") Long id){
+	public ResponseEntity<CategoriaDTO> findAll(@PathVariable("id") Long id) {
 		CategoriaDTO categoria = service.findById(id);
 		return ResponseEntity.ok().body(categoria);
 	}
@@ -46,6 +48,24 @@ public class CategoriaResource {
 				.buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto); //vai retorna o 201
 		//return ResponseEntity.ok().body(dto); retorna 200 como ok
-
 	}
+	
+	
+	@PutMapping("/editar/{id}")
+	public ResponseEntity<CategoriaDTO> update(@PathVariable("id") Long id, @RequestBody CategoriaDTO dto) {
+		dto = service.update(id, dto);
+		return ResponseEntity.ok().body(dto);
+	}
+	
+	
+	@DeleteMapping("/deletar/{id}")
+	public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+		service.delete(id);
+		return ResponseEntity.noContent().build(); //Diz que a resposta deu certo 
+	}
+	
+	
+	
+	
+	
 }

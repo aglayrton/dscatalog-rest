@@ -1,11 +1,15 @@
 package com.devsuperior.dscatalog.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
@@ -20,6 +24,12 @@ public class Categoria implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String nome;
+	
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant criado;
+	
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant atualizado;
 	
 	public Categoria() {
 		
@@ -46,6 +56,28 @@ public class Categoria implements Serializable{
 		this.nome = nome;
 	}
 	
+	
+	
+	public Instant getCriado() {
+		return criado;
+	}
+
+	
+	public Instant getAtualizado() {
+		return atualizado;
+	}
+
+	//antes de salvar vamos fazer o atributo receber o momento
+	@PrePersist
+	public void prePersist() {
+		criado = Instant.now();
+	}
+	
+	@PreUpdate
+	public void preAtualizado() {
+		atualizado = Instant.now();
+	}
+
 	//método padrão de comparação (ma nao certeza absoluta)
 	@Override
 	public int hashCode() {
