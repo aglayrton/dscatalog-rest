@@ -39,5 +39,12 @@ public class CategoriaService {
 		Categoria entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity not found"));
 		return new CategoriaDTO(entity);
 	}
+
+	public CategoriaDTO insert(CategoriaDTO dto) {
+		Categoria cat = new Categoria();
+		cat.setNome(dto.getName());
+		cat = repository.save(cat);//ele retorna uma referencia para entidade salva
+		return new CategoriaDTO(cat);
+	}
 		
 }
