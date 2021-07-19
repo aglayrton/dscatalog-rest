@@ -1,8 +1,10 @@
 package com.devsuperior.dscatalog.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,6 @@ public class CategoriaService {
 		return list.stream().map(x -> new CategoriaDTO(x)).collect(Collectors.toList());
 		
 		/*List<CategoriaDTO> listDto = new ArrayList<>();
-		
 		for(Categoria cat : list) {
 			listDto.add(new CategoriaDTO(cat));
 				return listDto;
@@ -33,11 +34,10 @@ public class CategoriaService {
 	
 	}
 	
-	
 	public CategoriaDTO findById(Long id){
-		Categoria obj =  repository.findById(id).get();
-		CategoriaDTO dto = new CategoriaDTO(obj);
-		return dto;
+		Optional<Categoria> obj =  repository.findById(id);
+		Categoria entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+		return new CategoriaDTO(entity);
 	}
 		
 }
