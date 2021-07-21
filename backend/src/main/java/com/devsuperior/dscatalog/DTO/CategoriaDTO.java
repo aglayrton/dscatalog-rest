@@ -11,7 +11,7 @@ public class CategoriaDTO {
 	
 	public CategoriaDTO(Categoria categoria) {
 		this.id = categoria.getId();
-		this.name = categoria.getNome();
+		this.name = categoria.getName();
 	}
 	
 	public CategoriaDTO(Long id, String name) {

@@ -13,31 +13,30 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_categoria")
-public class Categoria implements Serializable{
+@Table(name = "tb_category")
+public class Categoria implements Serializable {
 	/**
 	 * É uma interface que faz com que o objeto java possa ser convertido em bytes
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String nome;
-	
+	private String name;
+
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant criado;
-	
+	private Instant created_At;
+
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant atualizado;
-	
+	private Instant updated_At;
+
 	public Categoria() {
-		
 	}
 
-	public Categoria(Long id, String nome) {
+	public Categoria(Long id, String name) {
 		this.id = id;
-		this.nome = nome;
+		this.name = name;
 	}
 
 	public Long getId() {
@@ -48,47 +47,42 @@ public class Categoria implements Serializable{
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getName() {
+		return name;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	
-	
-	
-	public Instant getCriado() {
-		return criado;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	
-	public Instant getAtualizado() {
-		return atualizado;
+	public Instant getCreated_At() {
+		return created_At;
 	}
 
-	//antes de salvar vamos fazer o atributo receber o momento
+	public Instant getUpdated_At() {
+		return updated_At;
+	}
+
+	// antes de salvar vamos fazer o atributo receber o momento
 	@PrePersist
 	public void prePersist() {
-		criado = Instant.now();
-	}
-	
-	@PreUpdate
-	public void preAtualizado() {
-		atualizado = Instant.now();
+		created_At = Instant.now();
 	}
 
-	//método padrão de comparação (ma nao certeza absoluta)
+	@PreUpdate
+	public void preAtualizado() {
+		updated_At = Instant.now();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
-	
-	//método padrão de comparação 100%
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -103,13 +97,12 @@ public class Categoria implements Serializable{
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (nome == null) {
-			if (other.nome != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!nome.equals(other.nome))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
-	
-	
+
 }

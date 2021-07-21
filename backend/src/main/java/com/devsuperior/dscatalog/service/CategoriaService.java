@@ -50,7 +50,7 @@ public class CategoriaService{
 	@Transactional
 	public CategoriaDTO insert(CategoriaDTO dto) {
 		Categoria cat = new Categoria();
-		cat.setNome(dto.getName());
+		cat.setName(dto.getName());
 		cat = repository.save(cat);//ele retorna uma referencia para entidade salva
 		return new CategoriaDTO(cat);
 	}
@@ -59,7 +59,7 @@ public class CategoriaService{
 	public CategoriaDTO update(Long id, CategoriaDTO dto) {
 		try{
 			Categoria entity = repository.getOne(id);//ele instancia o objeto provisorio
-			entity.setNome(dto.getName());
+			entity.setName(dto.getName());
 			entity = repository.save(entity); //salvando no banco
 			return new CategoriaDTO(entity);//retornando como dto
 		}catch (EntityNotFoundException e) {
