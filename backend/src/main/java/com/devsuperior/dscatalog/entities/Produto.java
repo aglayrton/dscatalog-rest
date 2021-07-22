@@ -43,7 +43,7 @@ public class Produto implements Serializable{
 	@JoinTable( 
 			name = "tb_product_category",
 			joinColumns = @JoinColumn(name = "product_id"), //relaciona a classe onde estou
-			inverseJoinColumns = @JoinColumn(name = "category_id")//ele sabe referenciar devido o tipo ser categoria
+			inverseJoinColumns = @JoinColumn(name = "category_id")//ele sabe referenciar devido o tipo ser categoria abaixo
 	)
 	Set<Categoria> categorias = new HashSet<>();
 	
@@ -67,11 +67,11 @@ public class Produto implements Serializable{
 		this.id = id;
 	}
 
-	public String getname() {
+	public String getName() {
 		return name;
 	}
 
-	public void setname(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -83,11 +83,11 @@ public class Produto implements Serializable{
 		this.description = description;
 	}
 
-	public Double getprice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setprice(Double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
