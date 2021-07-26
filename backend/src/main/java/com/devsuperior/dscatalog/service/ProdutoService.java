@@ -34,7 +34,7 @@ public class ProdutoService {
 	
 	//listar todos
 	@Transactional(readOnly = true)
-	public Page<ProdutoDTO> findAllPages(PageRequest pageRequest){
+	public Page<ProdutoDTO> findAllPaged(PageRequest pageRequest){
 		Page<Produto> list = repository.findAll(pageRequest);
 		return list.map(x -> new ProdutoDTO(x));
 	}
