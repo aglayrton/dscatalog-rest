@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.hibernate.proxy.EntityNotFoundDelegate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.devsuperior.dscatalog.DTO.ProdutoDTO;
+import com.devsuperior.dscatalog.entities.Categoria;
 import com.devsuperior.dscatalog.entities.Produto;
+import com.devsuperior.dscatalog.repository.CategoriaRepository;
 import com.devsuperior.dscatalog.repository.ProdutoRepository;
 import com.devsuperior.dscatalog.service.exception.DatabaseException;
 import com.devsuperior.dscatalog.service.exception.ResourceEntityNotFoundException;
@@ -43,12 +44,14 @@ public class ProductServiceTest {
 	@Mock // quando faz um mock tem que configurar o comportamento simulado
 	private ProdutoRepository repository;
 
+	@Mock
+	private CategoriaRepository categoriaRepository;
+
 	private long existingId;
 	private long noExistingId;
 	private long dependentId;
 	private PageImpl<Produto> page;
 	private Produto produto;
-
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -56,27 +59,32 @@ public class ProductServiceTest {
 		noExistingId = 1000L;
 		dependentId = 4L;
 		produto = Factory.createdProduto();
+		Categoria category = Factory.createdCategory();
 		page = new PageImpl<>(List.of(produto));
-		
-		//AQUI DENTRO JA ESTAMOS COLOCANDO O COMPORTAMENTO DOS MÉTODOS QUANDO CHAMADOS NOS TESTES
-		
-		//(Pageable)ArgumentMatchers.any() é o argumento qualquer, vai fazer then
-		Mockito.when(repository.findAll((Pageable)ArgumentMatchers.any())).thenReturn(page);
-		
+
+		// AQUI DENTRO JA ESTAMOS COLOCANDO O COMPORTAMENTO DOS MÉTODOS QUANDO CHAMADOS
+		// NOS TESTES
+
+		// (Pageable)ArgumentMatchers.any() é o argumento qualquer, vai fazer then
+		Mockito.when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+
 		Mockito.when(repository.save(produto)).thenReturn(produto);
-		
+
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(produto);
-		
-		//simulando um cenário com id existente retornando um objeto optional
+
+		// simulando um cenário com id existente retornando um objeto optional
 		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(produto));
-		
-		//simulando um cenário com id não existente
+
+		// simulando um cenário com id não existente
 		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
-		
-		
+
+		// quando o id existente retorna o produto
 		Mockito.when(repository.getOne(existingId)).thenReturn(produto);
 		Mockito.when(repository.getOne(noExistingId)).thenThrow(EntityNotFoundException.class);
-		
+
+		Mockito.when(categoriaRepository.getOne(existingId)).thenReturn(category);
+		Mockito.when(categoriaRepository.getOne(noExistingId)).thenThrow(EntityNotFoundException.class);
+
 		// configurando,
 		// o when é pra chamar algum método mocado que retorna alguma coisa
 		// abaixo: quando eu chamar o deleteById com id existente o método nao vai fazer
@@ -89,45 +97,68 @@ public class ProductServiceTest {
 		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
 	}
 	
-	/*findById
-	 * Retornar um ProdutoDTO quando o id existir*/
-	@Test
-	public void produtoDTOShouldIdExisting() {
-		
-		ProdutoDTO result = service.findById(existingId);
-		
-		Assertions.assertNotNull(result);
-		
-		Mockito.verify(repository).findById(existingId);
-		
-	}
 	
+	@Test
+	public void updateShouldResourceNotFoundExceptioWhenIdNotExisting() {
+		
+		ProdutoDTO dto  = Factory.createdProdutoDto();
+		
+		Assertions.assertThrows(ResourceEntityNotFoundException.class, () -> {
+			service.editar(existingId, dto);
+		});
+
+		
+
+	}
+
+	@Test
+	public void updateShoulReturnProdutoDTOdWhenIdExisting() {
+		
+		ProdutoDTO dto  = Factory.createdProdutoDto();
+		ProdutoDTO result = service.editar(existingId, dto);
+
+		Assertions.assertNotNull(result);
+
+		Mockito.verify(repository).findById(existingId);
+
+	}
+
+	/*
+	 * findById Retornar um ProdutoDTO quando o id existir
+	 */
+	@Test
+	public void findByIdShoulReturnProdutoDTOdWhenIdExisting() {
+
+		ProdutoDTO result = service.findById(existingId);
+
+		Assertions.assertNotNull(result);
+
+		Mockito.verify(repository).findById(existingId);
+
+	}
 
 	@Test
 	public void ShouldResourceNotFoundExceptioWhenIdNotExisting() {
-		
-		
-		Assertions.assertThrows(ResourceEntityNotFoundException.class, ()->{
+
+		Assertions.assertThrows(ResourceEntityNotFoundException.class, () -> {
 			service.findById(noExistingId);
 		});
-		
+
 		Mockito.verify(repository).findById(noExistingId);
-		
+
 	}
-	
-	
-	
+
 	@Test
 	public void findAllPagedShouldReturnPage() {
 		Pageable pageable = PageRequest.of(0, 10);
-		
+
 		Page<ProdutoDTO> result = service.findAllPages(pageable);
-		
-		Assertions.assertNotNull(result);//tem que da verdadeiro
-		
-		Mockito.verify(repository, Mockito.times(1)).findAll(pageable);//tem que da verdadeiro
+
+		Assertions.assertNotNull(result);// tem que da verdadeiro
+
+		Mockito.verify(repository, Mockito.times(1)).findAll(pageable);// tem que da verdadeiro
 	}
-	
+
 	// testando delete lanca databaseexception quando id dependente
 	@Test
 	public void deleteShouldThrowDatabaseExceptionWhenIdNotExists() {
