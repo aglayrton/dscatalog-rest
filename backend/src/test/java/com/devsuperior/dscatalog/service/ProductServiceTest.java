@@ -3,6 +3,9 @@ package com.devsuperior.dscatalog.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.hibernate.proxy.EntityNotFoundDelegate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +72,10 @@ public class ProductServiceTest {
 		
 		//simulando um cenário com id não existente
 		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
+		
+		
+		Mockito.when(repository.getOne(existingId)).thenReturn(produto);
+		Mockito.when(repository.getOne(noExistingId)).thenThrow(EntityNotFoundException.class);
 		
 		// configurando,
 		// o when é pra chamar algum método mocado que retorna alguma coisa
