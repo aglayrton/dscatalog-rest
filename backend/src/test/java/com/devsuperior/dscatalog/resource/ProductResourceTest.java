@@ -3,7 +3,9 @@ package com.devsuperior.dscatalog.resource;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,7 +32,6 @@ import com.devsuperior.dscatalog.service.ProdutoService;
 import com.devsuperior.dscatalog.service.exception.DatabaseException;
 import com.devsuperior.dscatalog.service.exception.ResourceEntityNotFoundException;
 import com.devsuperior.dscatalog.test.Factory;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -84,8 +85,24 @@ public class ProductResourceTest {
 		doThrow(DatabaseException.class).when(service).deletar(dependentId);
 		
 		//created
-		when(service.salvar(produtoDto)).thenReturn(produtoDto);
+		when(service.salvar(ArgumentMatchers.any())).thenReturn(produtoDto);
 		
+	}
+	
+	@Test
+	public void deleteShouldNoContentWhenIdExisting() throws Exception {
+		ResultActions result = mockMvc.perform(delete("/produtos/deletar/{id}", existingId)
+				.accept(MediaType.APPLICATION_JSON)
+				);
+		result.andExpect(status().isNoContent());
+	}
+	
+	@Test
+	public void deleteShouldReturnNotFoundWhenIdDoesNoExist() throws Exception {
+		ResultActions result = mockMvc.perform(delete("/produtos/deletar/{id}", noExistingId)
+				.accept(MediaType.APPLICATION_JSON)
+				);
+		result.andExpect(status().isNotFound());
 	}
 	
 	//criado
@@ -94,7 +111,7 @@ public class ProductResourceTest {
 		
 		String jsonBody = objectMapper.writeValueAsString(produtoDto);
 		
-		ResultActions result  = mockMvc.perform(get("/produtos/salvar")
+		ResultActions result  = mockMvc.perform(post("/produtos/salvar")
 				.content(jsonBody)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON));
