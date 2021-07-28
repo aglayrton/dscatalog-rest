@@ -15,7 +15,7 @@ import com.devsuperior.dscatalog.repository.ProdutoRepository;
 import com.devsuperior.dscatalog.service.exception.ResourceEntityNotFoundException;
 
 @Transactional //vai fazer co que cada transação tenha um rollback (pois executa 1 e depois volta ao normal para ex outo)
-@SpringBootTest
+@SpringBootTest //Teste de integridade, traz todo o contexto, é mais lento
 public class ProductServiceIT {
 	
 	@Autowired
