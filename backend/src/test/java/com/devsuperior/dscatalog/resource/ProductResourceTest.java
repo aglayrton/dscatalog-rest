@@ -34,7 +34,7 @@ import com.devsuperior.dscatalog.service.exception.ResourceEntityNotFoundExcepti
 import com.devsuperior.dscatalog.test.Factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+//aqui é o teste de unidade em
 @WebMvcTest(ProdutoResource.class) //carrega o contexto somente para camada web
 public class ProductResourceTest {
 	

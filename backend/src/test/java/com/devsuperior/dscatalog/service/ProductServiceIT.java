@@ -46,8 +46,8 @@ public class ProductServiceIT {
 		Assertions.assertFalse(result.isEmpty()); //tem quser verdadeiro o resultadoo vazio
 		//achando o contenudo na posicao 0 com o nome tal
 		Assertions.assertEquals("Macbook Pro", result.getContent().get(0).getName());
-		Assertions.assertEquals("Pc Gamer", result.getContent().get(1).getName());
-		Assertions.assertEquals("Pc Gamer Alfa", result.getContent().get(2).getName());
+		Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());
+		Assertions.assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
 	}
 	
 	@Test
