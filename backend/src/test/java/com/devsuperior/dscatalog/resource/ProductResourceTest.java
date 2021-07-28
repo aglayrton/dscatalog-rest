@@ -1,5 +1,7 @@
 package com.devsuperior.dscatalog.resource;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -25,8 +27,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.devsuperior.dscatalog.DTO.ProdutoDTO;
 import com.devsuperior.dscatalog.resources.ProdutoResource;
 import com.devsuperior.dscatalog.service.ProdutoService;
+import com.devsuperior.dscatalog.service.exception.DatabaseException;
 import com.devsuperior.dscatalog.service.exception.ResourceEntityNotFoundException;
 import com.devsuperior.dscatalog.test.Factory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -45,6 +49,7 @@ public class ProductResourceTest {
 	
 	private long existingId;
 	private long noExistingId;
+	private long dependentId;
 	private ProdutoDTO produtoDto;
 	private PageImpl<ProdutoDTO> page;
 	
@@ -54,13 +59,14 @@ public class ProductResourceTest {
 	void setup() throws Exception{
 		existingId = 1L;
 		noExistingId = 1000L;
+		dependentId = 3L;
 		produtoDto = Factory.createdProdutoDto();
 		
 		//usamos o PageImpl porque ele aceita o new
 		//criamos um objeto de pagina concreta
 		page = new PageImpl<>(List.of(produtoDto));
 		
-		
+		//findAll
 		when(service.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
 	
 		//quando no meu service eu chamar o finById
@@ -72,8 +78,31 @@ public class ProductResourceTest {
 		Mockito.when(service.editar(ArgumentMatchers.eq(existingId), ArgumentMatchers.any())).thenReturn(produtoDto);
 		Mockito.when(service.editar(ArgumentMatchers.eq(noExistingId), ArgumentMatchers.any())).thenThrow(EntityNotFoundException.class);
 		
+		//delete
+		doNothing().when(service).deletar(existingId);
+		doThrow(ResourceEntityNotFoundException.class).when(service).deletar(noExistingId);
+		doThrow(DatabaseException.class).when(service).deletar(dependentId);
+		
+		//created
+		when(service.salvar(produtoDto)).thenReturn(produtoDto);
+		
 	}
 	
+	//criado
+	@Test
+	public void createdShouldReturnProduct() throws Exception {
+		
+		String jsonBody = objectMapper.writeValueAsString(produtoDto);
+		
+		ResultActions result  = mockMvc.perform(get("/produtos/salvar")
+				.content(jsonBody)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(status().isCreated());
+	}
+	
+	//atualizar 
 	@Test
 	public void updateShouldReturnProductWhenIdExisting() throws Exception {
 		
@@ -89,6 +118,7 @@ public class ProductResourceTest {
 		result.andExpect(jsonPath("$.id").exists());
 	}
 	
+	//Na consulta do id faça o retorno do objeto quando id existir
 	@Test
 	public void findByIdShoulReturnObjectWhenIdExisting() throws Exception {
 		ResultActions result = mockMvc.perform(get("/produtos/{id}", existingId).accept(MediaType.APPLICATION_JSON));
@@ -98,12 +128,14 @@ public class ProductResourceTest {
 		
 	}
 	
+	//Consultar o id 
 	@Test
 	public void findByIdShoulNotFoundWhenNoIdExisting() throws Exception {
 		ResultActions result = mockMvc.perform(get("/produtos/{id}", noExistingId).accept(MediaType.APPLICATION_JSON));
 		result.andExpect(status().isNotFound());
 	}
 	
+	//Consultar todos quando retornar a pagina
 	@Test
 	public void findAllShouldReturnPage() throws Exception{
 		
