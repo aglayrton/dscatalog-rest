@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.devsuperior.dscatalog.DTO.UserDTO;
 import com.devsuperior.dscatalog.DTO.UserInsertDTO;
+import com.devsuperior.dscatalog.DTO.UserUpdateDTO;
 import com.devsuperior.dscatalog.service.UserService;
 
 @RestController
@@ -46,12 +47,12 @@ public class UserResource {
 		UserDTO userDTO = service.salvar(user);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id")
 				.buildAndExpand(userDTO.getId()).toUri();
-		return ResponseEntity.ok().body(userDTO);
+		return ResponseEntity.created(uri).body(userDTO);
 		//return new ResponseEntity<UserDTO>(userDTO, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @Valid @RequestBody UserInsertDTO user){
+	public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateDTO user){
 		UserDTO userDTO = service.editar(id, user);
 		return ResponseEntity.ok().body(userDTO);
 	}

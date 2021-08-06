@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.dscatalog.DTO.RoleDTO;
 import com.devsuperior.dscatalog.DTO.UserDTO;
 import com.devsuperior.dscatalog.DTO.UserInsertDTO;
+import com.devsuperior.dscatalog.DTO.UserUpdateDTO;
 import com.devsuperior.dscatalog.entities.Role;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repository.RoleRepository;
@@ -72,12 +73,12 @@ public class UserService {
 	
 	
 	//atualizar
-	public UserDTO editar(Long id, UserInsertDTO dto) {
+	public UserDTO editar(Long id, UserUpdateDTO dto) {
 		try {
 			User entity = repository.getOne(id);//instacia uma unidade monitorada pelo JPA (Não vai no banco)
 			//recebe o dto e a entidade
 			copyDTOToEntity(dto, entity);
-			entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+			//entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 			entity = repository.save(entity);		
 			return new UserDTO(entity);
 		}catch(EntityNotFoundException e) {
