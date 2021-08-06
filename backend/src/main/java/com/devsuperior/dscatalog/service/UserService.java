@@ -27,6 +27,7 @@ import com.devsuperior.dscatalog.service.exception.DatabaseException;
 import com.devsuperior.dscatalog.service.exception.ResourceEntityNotFoundException;
 
 @Service
+@Transactional
 public class UserService {
 
 	@Autowired
@@ -78,7 +79,7 @@ public class UserService {
 			User entity = repository.getOne(id);//instacia uma unidade monitorada pelo JPA (Não vai no banco)
 			//recebe o dto e a entidade
 			copyDTOToEntity(dto, entity);
-			//entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+			entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 			entity = repository.save(entity);		
 			return new UserDTO(entity);
 		}catch(EntityNotFoundException e) {
