@@ -2,11 +2,11 @@ package com.devsuperior.dscatalog.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,14 +53,14 @@ public class ProdutoResource {
 	}
 
 	@PostMapping("/salvar")
-	public ResponseEntity<ProdutoDTO> salvar(@RequestBody ProdutoDTO dto) {
+	public ResponseEntity<ProdutoDTO> salvar(@Valid @RequestBody ProdutoDTO dto) {
 		dto = service.salvar(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
 	
 	@PutMapping("/editar/{id}")
-	public ResponseEntity<ProdutoDTO> salvar(@RequestBody ProdutoDTO dto, @PathVariable("id") Long id) {
+	public ResponseEntity<ProdutoDTO> salvar(@Valid @RequestBody ProdutoDTO dto, @PathVariable("id") Long id) {
 		dto = service.editar(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}

@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 import com.devsuperior.dscatalog.entities.User;
 
 public class UserDTO implements Serializable{
@@ -13,12 +16,16 @@ public class UserDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	
+	@NotBlank(message = "Campo Obrigatório")
 	private String firstName;
 	private String lastName;
+	
+	@Email(message = "Favor entrar com e-mail válido")
 	private String email;
 	//private String password;
 	
-	Set<RoleDTO> roles = new HashSet<>(); 
+	Set<RoleDTO> rolesDTO = new HashSet<>(); 
 	
 	public UserDTO() {
 	}
@@ -31,12 +38,14 @@ public class UserDTO implements Serializable{
 		//this.password = password;
 	}
 	
-	public UserDTO(User user) {
-		id = user.getId();
-		firstName = user.getFirstName();
-		lastName = user.getLastName();
-		email = user.getEmail();
-		//this.password = user.getPassword();
+	public UserDTO(User entity) {
+		id = entity.getId();
+		firstName = entity.getFirstName();
+		lastName = entity.getLastName();
+		email = entity.getEmail();
+		//this.password = entity.getPassword();
+		//Pego a lista que ja tem roles, dai pra cada role que tem dentro dele eu insiro no set um roleDTO
+		entity.getRoles().forEach(role ->this.rolesDTO.add(new RoleDTO(role)));
 	}
 
 	public Long getId() {
@@ -72,7 +81,7 @@ public class UserDTO implements Serializable{
 	}
 
 	public Set<RoleDTO> getRoles() {
-		return roles;
+		return rolesDTO;
 	}
 
 	

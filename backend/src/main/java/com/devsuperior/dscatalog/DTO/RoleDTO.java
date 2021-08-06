@@ -2,6 +2,8 @@ package com.devsuperior.dscatalog.DTO;
 
 import java.io.Serializable;
 
+import com.devsuperior.dscatalog.entities.Role;
+
 public class RoleDTO implements Serializable{
 	/**
 	 * 
@@ -18,6 +20,11 @@ public class RoleDTO implements Serializable{
 	public RoleDTO(long id, String authority) {
 		this.id = id;
 		this.authority = authority;
+	}
+	
+	public RoleDTO(Role role) {
+		id = role.getId();
+		authority = role.getAuthority();
 	}
 
 	public long getId() {

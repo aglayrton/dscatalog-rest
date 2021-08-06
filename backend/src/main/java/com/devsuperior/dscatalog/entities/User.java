@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,13 +29,15 @@ public class User implements Serializable{
 	private Long id;
 	private String firstName;
 	private String lastName;
+	
+	@Column(unique = true)
 	private String email;
 	private String password;
 	
 	//criamos a tabela aqui pois pelo role vamos saber o perfil desse usuario
 	//pois na tabela ele coloca o id do usuario e o id do perfil
 	//dai chamando o roles aqui dentro, podemos saber qual o perfil desse usuário.
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER) //força para quem sempre buscar o usuario no banco vem os roles (EXIGENCIA DO SPRING SECURITY)
 	@JoinTable(name = "tb_user_role",
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id")
