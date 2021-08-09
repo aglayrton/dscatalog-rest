@@ -42,7 +42,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		clients.inMemory()
 		.withClient("dscatalog") //defini o cleintId, ou seja, qual o nome da aplicacao
 		.secret(passwordEnconder.encode("dscatalog123")) //qual senha da aplicação (nao é a do usuario)
-		.scopes("read", "writw") //o acesso é de leitura e escrita
+		.scopes("read", "write") //o acesso é de leitura e escrita
 		.authorizedGrantTypes("password") //padrão do oauth
 		.accessTokenValiditySeconds(86400); //tempo de validade do token valido em milessegundo
 	}
