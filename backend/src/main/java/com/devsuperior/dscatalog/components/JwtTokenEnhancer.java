@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repository.UserRepository;
 
+//classe é um utilitario para adicionar mais informacoes ao nosso token
 @Component
 public class JwtTokenEnhancer implements TokenEnhancer {//interface do oauth2
 	
