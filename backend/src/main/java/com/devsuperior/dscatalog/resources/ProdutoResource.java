@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,7 +23,7 @@ import com.devsuperior.dscatalog.DTO.ProdutoDTO;
 import com.devsuperior.dscatalog.service.ProdutoService;
 
 @RestController
-@RequestMapping(("/produtos"))
+@RequestMapping("/produtos")
 public class ProdutoResource {
 
 	@Autowired
@@ -30,6 +31,8 @@ public class ProdutoResource {
 
 	@GetMapping("/lista")
 	public ResponseEntity<Page<ProdutoDTO>> findAll(
+			@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
+			@RequestParam(value = "name", defaultValue = "") String name,
 			Pageable pageable
 				
 			/* @RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -41,8 +44,8 @@ public class ProdutoResource {
 		//Parametros: page, size, sort
 		/*PageRequest produto = PageRequest.of(page, linePerPage, Direction.valueOf(direction), sort);
 		Page<ProdutoDTO> dto = service.findAllPages(produto);*/
-		
-		Page<ProdutoDTO> dto = service.findAllPages(pageable);
+		//trim vai remover os espaços em brancos depois e antes do string
+		Page<ProdutoDTO> dto = service.findAllPages(categoryId, name.trim(), pageable);
 		return ResponseEntity.ok().body(dto);
 	}
 

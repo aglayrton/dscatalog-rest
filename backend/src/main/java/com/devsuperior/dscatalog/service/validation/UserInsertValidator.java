@@ -20,7 +20,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 	@Autowired
 	private UserRepository repository;
 	
-	//nao vamos fazer nada
+	//nao vamos fazer nada, ela é usada quando é inicializado
 	@Override
 	public void initialize(UserInsertValid ann) {
 	}

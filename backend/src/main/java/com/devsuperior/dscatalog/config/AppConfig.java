@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 public class AppConfig {
 	
-	//coloando valores definidos na propriedade
+	//colocando valores definidos na propriedade
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 	
@@ -24,11 +24,11 @@ public class AppConfig {
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();//instancia o objeto
-		tokenConverter.setSigningKey(jwtSecret); //faz o registro no token
+		tokenConverter.setSigningKey(jwtSecret); //faz o registro de assinatura no token
 		return tokenConverter;
 	}
 	
-	//bean para token jwt
+	//bean para acessar o token jwt
 	@Bean
 	public JwtTokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());//
