@@ -1,4 +1,5 @@
 import React from 'react'; //fica meio apagado pq nao é obrigatorio
+import './assets/styles/custom.scss';
 import './App.css';
 
 function App() {
