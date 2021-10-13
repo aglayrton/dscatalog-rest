@@ -8,6 +8,7 @@
 }
 
 .main-menu{
+    padding-right: 40px;
     display: flex;
     font-size: 18px;
     width: 380px;
